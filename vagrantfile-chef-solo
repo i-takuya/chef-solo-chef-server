@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+  #
+  #      W  A  R  N  I  N  G
+  #
+  #  To use this Vagrantfile you must:
+  #   0.  cd %HOMEPATH%\{project}  where project is some directory
+  #   1.  check out the infrastructure tree for your project.
+  #   2.  define CHEF_ENV={USERNAME} in your environment variables.
+  #       BC developer environments should be all uppercase.
+  #   3.  create a 'USERNAME' environment on the chef server via:
+  #         cd infra/chef-repo/environments
+  #         --create a valid chef environment spec.
+  #         cp DEV.rb {USERNAME}.rb, like BRYANM.rb
+  #         vi {USERNAME}.rb to set your workstation IP address.
+  #         upload the environment to the chef server:
+  #           knife environment from file {USERNAME}.rb
+  #         optionally 'svn add;svn commit' the new environment file.
+  #    4.  point /etc/hosts:chefserver at 172.16.70.22
+  #
+  # load balancer
+  #   What the NAS/browser talks to.
+  #   Initial memory = 256MB
+  #
+  config.vm.define :chef2a do |chef|
+    chef.vm.box = "bc_b3"
+      chef.vm.customize ["modifyvm", :id, "--memory", 1024]
+      chef.vm.network :bridged
+      chef.vm.provision :chef_solo do |solo|
+        solo.cookbooks_path = "cookbook's path"
+        solo.json = {
+          "chef_hostname" => "chef-server's hostname",
+          "chefserver" => "chef-server 11's rpm. this file need to be placed in ./depot/"
+        }
+        solo.add_recipe "bc_chef-server"
+        solo.run_list = ["bc_chef-server"]
+      end
+  end
+end
