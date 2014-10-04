@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: bc_chef-server
+# Cookbook Name:: chef-server
 # Recipe:: default
 #
 # Copyright 2014, YOUR_COMPANY_NAME
@@ -21,7 +21,7 @@ bash "set_hostname" do
   EOH
 end
 
-# check depot if chef-server 11 's rpm is exsit .
+# check depot if chef-server 11 's rpm exsits .
 # This script works for only workstation cloud
 # install chef-server 
 # reconfigure chef-server
